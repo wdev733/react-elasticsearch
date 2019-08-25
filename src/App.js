@@ -28,6 +28,21 @@ function formatDate(date, format, locale) {
 }
 
 class App extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      dateFormat: "yyyy-MM-dd"
+    }
+  }
+
+  onChange = (e) => {
+    this.setState({
+      dateFormat: e.target.value
+    })
+  }
+
   dateQuery(value) {
     let query = null;
     if (value) {
@@ -52,75 +67,82 @@ class App extends Component {
   }
 
   render() {
-    const FORMAT = "yyyy-MM-dd";
+    const FORMAT = this.state.dateFormat;
 
     return (
-      <ReactiveBase
-        app="airbeds-test-app"
-        credentials="X8RsOu0Lp:9b4fe1a4-58c6-4089-a042-505d86d9da30"
-        type="listing"
-      >
-        <div className="row">
-          <div className="col">
-            <DateRange
-              componentId="DateSensor"
-              dayPickerInputProps={{
-                formatDate,
-                format: FORMAT,
-                parseDate
-              }}
-              dataField="date_from"
-              customQuery={this.dateQuery}
-              initialMonth={new Date("2017-05-05")}
-            />
-          </div>
+      <div>
+        
+        <p>
+          Date Format: <input type="text" value={this.state.dateFormat} onChange={(e) => this.onChange(e)}/>
+        </p>
 
-          <div className="col">
-            <SelectedFilters />
-            <ReactiveList
-              componentId="SearchResult"
-              dataField="name"
-              from={0}
-              size={40}
-              showPagination
-              react={{
-                and: ["DateSensor"]
-              }}
-              render={({ data }) => (
-                <ReactiveList.ResultCardsWrapper>
-                  {data.map(item => (
-                    <ResultCard href={item.listing_url} key={item.id}>
-                      <ResultCard.Image src={item.image} />
-                      <ResultCard.Title>
-                        <div
-                          className="book-title"
-                          dangerouslySetInnerHTML={{
-                            __html: item.name
-                          }}
-                        />
-                      </ResultCard.Title>
+        <ReactiveBase
+          app="airbeds-test-app"
+          credentials="X8RsOu0Lp:9b4fe1a4-58c6-4089-a042-505d86d9da30"
+          type="listing"
+        >
+          <div className="row">
+            <div className="col">
+              <DateRange
+                componentId="DateSensor"
+                dayPickerInputProps={{
+                  formatDate,
+                  format: FORMAT,
+                  parseDate
+                }}
+                dataField="date_from"
+                customQuery={this.dateQuery}
+                initialMonth={new Date("2017-05-05")}
+              />
+            </div>
 
-                      <ResultCard.Description>
-                        <div>
-                          <div>${item.price}</div>
-                          <span
-                            style={{
-                              backgroundImage: `url(${item.host_image})`
+            <div className="col">
+              <SelectedFilters />
+              <ReactiveList
+                componentId="SearchResult"
+                dataField="name"
+                from={0}
+                size={40}
+                showPagination
+                react={{
+                  and: ["DateSensor"]
+                }}
+                render={({ data }) => (
+                  <ReactiveList.ResultCardsWrapper>
+                    {data.map(item => (
+                      <ResultCard href={item.listing_url} key={item.id}>
+                        <ResultCard.Image src={item.image} />
+                        <ResultCard.Title>
+                          <div
+                            className="book-title"
+                            dangerouslySetInnerHTML={{
+                              __html: item.name
                             }}
                           />
-                          <p>
-                            {item.room_type} · {item.accommodates} guests
-                          </p>
-                        </div>
-                      </ResultCard.Description>
-                    </ResultCard>
-                  ))}
-                </ReactiveList.ResultCardsWrapper>
-              )}
-            />
+                        </ResultCard.Title>
+
+                        <ResultCard.Description>
+                          <div>
+                            <div>${item.price}</div>
+                            <span
+                              style={{
+                                backgroundImage: `url(${item.host_image})`
+                              }}
+                            />
+                            <p>
+                              {item.room_type} · {item.accommodates} guests
+                            </p>
+                          </div>
+                        </ResultCard.Description>
+                      </ResultCard>
+                    ))}
+                  </ReactiveList.ResultCardsWrapper>
+                )}
+              />
+            </div>
           </div>
-        </div>
-      </ReactiveBase>
+        </ReactiveBase>
+      </div>
     );
   }
 }
